@@ -1,6 +1,6 @@
 import uuid
 import json
-import time
+from datetime import datetime, timezone
 import os
 from datetime import date, timedelta
 from http_exception import ValidationException
@@ -54,9 +54,12 @@ class NeuigkeitDTO:
 def compute_ttl(gueltigBis: date) -> int:
     ttl_feature_active = int(os.getenv('TTL_FEATURE_ACTIVE', 1)) == 1
     if ttl_feature_active == 1 and gueltigBis:
-        ttl_date = gueltigBis + timedelta(days=7)
-        unixtime = time.mktime(ttl_date.timetuple())
-        return int(unixtime)
+        local_date = gueltigBis + timedelta(days=7)
+        utc_date = datetime(year=local_date.year,
+                            month=local_date.month,
+                            day=local_date.day,
+                            tzinfo=timezone.utc)
+        return int(utc_date.timestamp())
     else:
         return None
 

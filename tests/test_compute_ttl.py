@@ -11,4 +11,4 @@ def test_compute_none():
 def test_compute_ttl():
     gueltigBis = date.fromisoformat("2023-01-27")
     neuigkeit_dto = NeuigkeitDTO("Betreff", "Nachricht", None, gueltigBis)
-    assert neuigkeit_dto.ttl == 1675378800
+    assert neuigkeit_dto.ttl == 1675382400

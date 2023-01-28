@@ -18,7 +18,7 @@ def test_ttl_in_dynamobo_active(lambda_context, dynamodb_table):
     id = extract_id(response)
     item = dynamo_db_service.get_neuigkeit(DEFAULT_TENANT_ID, id)
 
-    assert item['ttl'] == 1644274800
+    assert item['ttl'] == 1644278400
 
 
 def test_ttl_in_dynamobo_inactive(lambda_context, dynamodb_table):
