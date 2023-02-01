@@ -47,7 +47,7 @@ def test_create_neuigkeit_missing_field_betreff_bad_request(lambda_context, dyna
         event('/api/neuigkeit', 'POST', json.dumps(item)), lambda_context)
 
     assert response == lambda_response(
-        400, json.dumps({'error_text': "'betreff' is missing."}))
+        400, json.dumps({'error_text': "'betreff' not present."}))
 
 
 def test_create_neuigkeit_missing_field_nachricht_bad_request(lambda_context, dynamodb_table):
@@ -60,7 +60,7 @@ def test_create_neuigkeit_missing_field_nachricht_bad_request(lambda_context, dy
         event('/api/neuigkeit', 'POST', json.dumps(item)), lambda_context)
 
     assert response == lambda_response(400, json.dumps(
-        {'error_text': "'nachricht' is missing."}))
+        {'error_text': "'nachricht' not present."}))
 
 
 def test_create_neuigkeit_without_optional_parameters_ok(lambda_context, dynamodb_table):

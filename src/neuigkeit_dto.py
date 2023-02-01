@@ -1,16 +1,18 @@
 import uuid
 import json
-from datetime import datetime, timezone
 import os
-from datetime import date, timedelta
-from http_exception import ValidationException
+from datetime import date
+from lambda_utils.exception import ValidationException
+from lambda_utils.validation import check_required_field
+from lambda_utils.ttl import compute_ttl_for_date
+from lambda_utils.env_utils import getenv_as_boolean
 
 
 def create(item: dict):
     betreff = item.get('betreff')
-    checkRequiredField(betreff, 'betreff')
+    check_required_field(betreff, 'betreff')
     nachricht = item.get('nachricht')
-    checkRequiredField(nachricht, 'nachricht')
+    check_required_field(nachricht, 'nachricht')
     gueltigVon = item.get('gueltigVon')
     gueltigBis = item.get('gueltigBis')
     return NeuigkeitDTO(
@@ -20,11 +22,6 @@ def create(item: dict):
         None if gueltigBis is None else fromisoformat(gueltigBis),
         item.get('id')
     )
-
-
-def checkRequiredField(field, fieldname: str):
-    if field is None or len(field) <= 0:
-        raise ValidationException(f"'{fieldname}' is missing.")
 
 
 def fromisoformat(d: str):
@@ -45,23 +42,11 @@ class NeuigkeitDTO:
         self.nachricht = nachricht
         self.gueltigVon = gueltigVon
         self.gueltigBis = gueltigBis
-        self.ttl = compute_ttl(gueltigBis)
+        self.ttl = compute_ttl_for_date(gueltigBis, 7) if getenv_as_boolean(
+            'TTL_FEATURE_ACTIVE', True) else None
 
     def to_json(self):
         return json.dumps(self.__dict__, cls=NeuigkeitDTOEncoder)
-
-
-def compute_ttl(gueltigBis: date) -> int:
-    ttl_feature_active = int(os.getenv('TTL_FEATURE_ACTIVE', 1)) == 1
-    if ttl_feature_active == 1 and gueltigBis:
-        local_date = gueltigBis + timedelta(days=7)
-        utc_date = datetime(year=local_date.year,
-                            month=local_date.month,
-                            day=local_date.day,
-                            tzinfo=timezone.utc)
-        return int(utc_date.timestamp())
-    else:
-        return None
 
 
 class NeuigkeitDTOEncoder(json.JSONEncoder):

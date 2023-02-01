@@ -58,7 +58,7 @@ def test_update_neuigkeit_required_field_to_null_not_ok(lambda_context, dynamodb
         '/api/neuigkeit/{id}', 'PUT', json.dumps(itemUpdate), pathParameters), lambda_context)
 
     assert response == lambda_response(
-        400, json.dumps({'error_text': "'betreff' is missing."}))
+        400, json.dumps({'error_text': "'betreff' not present."}))
 
 
 def test_update_neuigkeit_with_unknown_id_not_ok(lambda_context, dynamodb_table):
@@ -75,7 +75,7 @@ def test_update_neuigkeit_with_unknown_id_not_ok(lambda_context, dynamodb_table)
         '/api/neuigkeit/{id}', 'PUT', json.dumps(itemUpdate), pathParameters), lambda_context)
 
     assert response == lambda_response(
-        400, json.dumps({'error_text': "unknown id 'unknown' (tenant='mytenant1') to update."}))
+        400, json.dumps({'error_text': "unknown id 'unknown' (tenant='mytenant1')."}))
 
 
 def test_update_neuigkeit_set_null_value(lambda_context, dynamodb_table):

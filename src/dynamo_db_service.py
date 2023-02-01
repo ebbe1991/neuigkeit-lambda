@@ -41,13 +41,7 @@ def get_neuigkeiten(tenant_id: str) -> list:
     response = table.query(
         KeyConditionExpression=Key('tenant-id').eq(tenant_id)
     )
-    data = response['Items']
-
-    while 'LastEvaluatedKey' in response:
-        response = table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
-        data.extend(response['Items'])
-    return data
-
+    return response['Items']
 
 def delete_neuigkeit(tenant_id: str, id: str):
     table = get_neuigkeiten_table()

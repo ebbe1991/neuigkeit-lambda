@@ -1,5 +1,5 @@
 from neuigkeit_dto import NeuigkeitDTO, create
-from http_exception import ValidationException
+from lambda_utils.exception import UnknownIdException
 import dynamo_db_service
 
 
@@ -17,7 +17,7 @@ def update_neuigkeit(tenant_id: str, id: str, dto: dict) -> NeuigkeitDTO:
         dynamo_db_service.put_neuigkeit(tenant_id, neuigkeit)
         return neuigkeit
     else:
-        raise ValidationException(f"unknown id '{id}' (tenant='{tenant_id}') to update.")
+        raise UnknownIdException(id, tenant_id)
 
 
 def get_neuigkeit(tenant_id: str, id: str) -> NeuigkeitDTO:
