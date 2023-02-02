@@ -125,27 +125,6 @@ def test_update_neuigkeit_without_body_not_ok(lambda_context, dynamodb_table):
         {'error_text': 'body not present.'}))
 
 
-def test_update_neuigkeit_without_id_not_ok(lambda_context, dynamodb_table):
-    item = {
-        'betreff': "Test",
-        "nachricht": "Eine Testnachricht",
-        "gueltigVon": "2022-01-01",
-        "gueltigBis": "2022-02-01"
-    }
-    neuigkeit_controller.create_neuigkeit(
-        DEFAULT_TENANT_ID, item)
-
-    pathParameters = {
-        "id": ''
-    }
-
-    response = neuigkeit_handler.handle(
-        event('/api/neuigkeit/{id}', 'PUT', json.dumps(item), pathParameters), lambda_context)
-
-    assert response == lambda_response(400, json.dumps(
-        {'error_text': 'id not present.'}))
-
-
 def test_update_neuigkeit_without_tenant_id_not_ok(lambda_context, dynamodb_table):
     headers = {
         'Content-Type': 'application/json'

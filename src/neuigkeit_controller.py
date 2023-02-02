@@ -1,5 +1,6 @@
 from neuigkeit_dto import NeuigkeitDTO, create
 from lambda_utils.exception import UnknownIdException
+from datetime import date
 import dynamo_db_service
 
 
@@ -29,12 +30,13 @@ def get_neuigkeit(tenant_id: str, id: str) -> NeuigkeitDTO:
         return None
 
 
-def get_neuigkeiten(tenant_id: str) -> list[NeuigkeitDTO]:
+def get_neuigkeiten(tenant_id: str, stichtag: date = None) -> list[NeuigkeitDTO]:
     neuigkeiten = []
     items = dynamo_db_service.get_neuigkeiten(tenant_id)
     for item in items:
         neuigkeit = create(item)
-        neuigkeiten.append(neuigkeit)
+        if stichtag is None or neuigkeit.gueltigBis is None or neuigkeit.gueltigBis >= stichtag:
+            neuigkeiten.append(neuigkeit)
     return neuigkeiten
 
 

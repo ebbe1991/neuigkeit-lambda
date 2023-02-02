@@ -2,7 +2,7 @@ from aws_lambda_powertools.event_handler import APIGatewayHttpResolver
 import neuigkeit_controller
 from neuigkeit_controller import NeuigkeitDTO
 from lambda_utils.response_utils import response, empty_response
-from lambda_utils.event_utils import extract_body, extract_id, extract_tenant
+from lambda_utils.event_utils import extract_body, extract_tenant, extract_stichtag
 from lambda_utils.exception import ValidationException
 import json
 app = APIGatewayHttpResolver()
@@ -21,21 +21,19 @@ def post():
     return response(201, neuigkeit.to_json())
 
 
-@app.put('/api/neuigkeit/{id}')
-def put():
+@app.put('/api/neuigkeit/<id>')
+def put(id):
     event = app.current_event
     tenant_id = extract_tenant(event)
-    id = extract_id(event)
     body = extract_body(event)
     neuigkeit = neuigkeit_controller.update_neuigkeit(tenant_id, id, body)
     return response(200, neuigkeit.to_json())
 
 
-@app.get('/api/neuigkeit/{id}')
-def get():
+@app.get('/api/neuigkeit/<id>')
+def get(id):
     event = app.current_event
     tenant_id = extract_tenant(event)
-    id = extract_id(event)
     neuigkeit = neuigkeit_controller.get_neuigkeit(tenant_id, id)
     if neuigkeit:
         return response(200, neuigkeit.to_json())
@@ -47,15 +45,15 @@ def get():
 def getAll():
     event = app.current_event
     tenant_id = extract_tenant(event)
-    neuigkeiten = neuigkeit_controller.get_neuigkeiten(tenant_id)
+    stichtag = extract_stichtag(event)
+    neuigkeiten = neuigkeit_controller.get_neuigkeiten(tenant_id, stichtag)
     return response(200, json.dumps(neuigkeiten, default=NeuigkeitDTO.to_json))
 
 
-@app.delete('/api/neuigkeit/{id}')
-def delete():
+@app.delete('/api/neuigkeit/<id>')
+def delete(id):
     event = app.current_event
     tenant_id = extract_tenant(event)
-    id = extract_id(event)
     deleted = neuigkeit_controller.delete_neuigkeit(tenant_id, id)
     if deleted:
         return empty_response(204)
