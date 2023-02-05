@@ -4,7 +4,6 @@ from neuigkeit_controller import NeuigkeitDTO
 from lambda_utils.response_utils import response, empty_response, to_json_array
 from lambda_utils.event_utils import extract_body, extract_tenant, extract_stichtag
 from lambda_utils.exception import ValidationException
-import json
 app = APIGatewayHttpResolver()
 
 
