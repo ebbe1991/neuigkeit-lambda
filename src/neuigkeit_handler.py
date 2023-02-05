@@ -1,7 +1,7 @@
 from aws_lambda_powertools.event_handler import APIGatewayHttpResolver
 import neuigkeit_controller
 from neuigkeit_controller import NeuigkeitDTO
-from lambda_utils.response_utils import response, empty_response
+from lambda_utils.response_utils import response, empty_response, to_json_array
 from lambda_utils.event_utils import extract_body, extract_tenant, extract_stichtag
 from lambda_utils.exception import ValidationException
 import json
@@ -47,7 +47,8 @@ def getAll():
     tenant_id = extract_tenant(event)
     stichtag = extract_stichtag(event)
     neuigkeiten = neuigkeit_controller.get_neuigkeiten(tenant_id, stichtag)
-    return response(200, json.dumps(neuigkeiten, default=NeuigkeitDTO.to_json))
+    body = to_json_array(list(map(NeuigkeitDTO.to_json, neuigkeiten)))
+    return response(200, body)
 
 
 @app.delete('/api/neuigkeit/<id>')
