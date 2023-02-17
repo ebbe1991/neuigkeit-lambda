@@ -1,6 +1,5 @@
 import json
 from src import neuigkeit_controller
-
 from src import neuigkeit_handler
 from tests.helper import event, extract_body, extract_status_code, lambda_response, DEFAULT_TENANT_ID
 

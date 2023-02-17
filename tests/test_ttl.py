@@ -1,7 +1,6 @@
 import json
 import os
 from src import dynamo_db_service
-
 from src import neuigkeit_handler
 from tests.helper import event, extract_id, DEFAULT_TENANT_ID
 

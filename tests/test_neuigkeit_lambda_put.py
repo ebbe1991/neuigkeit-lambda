@@ -1,7 +1,6 @@
 import json
 from datetime import date
 from src import neuigkeit_controller
-
 from src import neuigkeit_handler
 from src.neuigkeit_dto import NeuigkeitDTO
 from tests.helper import event, lambda_response, DEFAULT_TENANT_ID
