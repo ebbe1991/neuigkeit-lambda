@@ -19,7 +19,7 @@ def test_create_neuigkeit_ok(lambda_context, dynamodb_table):
 
     assert id is not None
     assert response == lambda_response(201, NeuigkeitDTO(
-        "Test", "Eine Testnachricht", date.fromisoformat("2022-01-01"), date.fromisoformat("2022-02-01"), id).to_json())
+        "Test", "Eine Testnachricht", None, date.fromisoformat("2022-01-01"), date.fromisoformat("2022-02-01"), id).to_json())
 
 
 def test_create_neuigkeit_invalid_dateformat_bad_request(lambda_context, dynamodb_table):
@@ -73,7 +73,7 @@ def test_create_neuigkeit_without_optional_parameters_ok(lambda_context, dynamod
 
     assert id is not None
     assert response == lambda_response(201, NeuigkeitDTO(
-        "Test", "Eine Testnachricht", None, None, id).to_json())
+        "Test", "Eine Testnachricht", None, None, None, id).to_json())
 
 
 
@@ -97,3 +97,19 @@ def test_create_neuigkeit_without_tenant_id_not_ok(lambda_context, dynamodb_tabl
 
     assert response == lambda_response(400, json.dumps(
         {'error_text': 'tenant not present.'}))
+
+def test_create_neuigkeit_with_optional_introtext_ok(lambda_context, dynamodb_table):
+    item = {
+        'betreff': "Test",
+        "nachricht": "Eine Testnachricht",
+        "introtext": "Eine Einleitung",
+        "gueltigVon": "2022-01-01"
+    }
+    response = neuigkeit_handler.handle(
+        event('/api/neuigkeit', 'POST', json.dumps(item)), lambda_context)
+    id = extract_id(response)
+
+    assert id is not None
+    assert response == lambda_response(201, NeuigkeitDTO(
+        "Test", "Eine Testnachricht", "Eine Einleitung", date.fromisoformat("2022-01-01"), None, id).to_json())
+

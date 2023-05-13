@@ -14,6 +14,7 @@ def test_get_neuigkeiten_ok(lambda_context, dynamodb_table):
     item2 = {
         'betreff': "Test2",
         "nachricht": "Eine Testnachricht",
+        "introtext": "Eine Einleitung",
         "gueltigVon": "2022-01-01",
         "gueltigBis": "2022-02-01"
     }

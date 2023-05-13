@@ -18,6 +18,7 @@ def put_neuigkeit(tenant_id: str, neuigkeit: NeuigkeitDTO):
             'id': neuigkeit.id,
             'betreff': neuigkeit.betreff,
             'nachricht': neuigkeit.nachricht,
+            'introtext': neuigkeit.introtext,
             'gueltigVon': neuigkeit.gueltigVon.isoformat() if neuigkeit.gueltigVon is not None else None,
             'gueltigBis': neuigkeit.gueltigBis.isoformat() if neuigkeit.gueltigBis is not None else None,
             'ttl': neuigkeit.ttl

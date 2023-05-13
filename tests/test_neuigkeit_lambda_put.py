@@ -23,6 +23,7 @@ def test_update_neuigkeit_ok(lambda_context, dynamodb_table):
     itemUpdate = {
         'betreff': "Test",
         "nachricht": "Eine Testnachricht (aktualisiert)",
+        "introtext": "Eine Einleitung (aktualisiert)",
         "gueltigVon": "2022-01-01",
         "gueltigBis": "2022-02-01"
     }
@@ -30,7 +31,7 @@ def test_update_neuigkeit_ok(lambda_context, dynamodb_table):
         '/api/neuigkeit/{id}', 'PUT', json.dumps(itemUpdate), pathParameters), lambda_context)
 
     assert response == lambda_response(200, NeuigkeitDTO(
-        "Test", "Eine Testnachricht (aktualisiert)", date.fromisoformat("2022-01-01"), date.fromisoformat("2022-02-01"), createdNeuigkeit.id).to_json())
+        "Test", "Eine Testnachricht (aktualisiert)", "Eine Einleitung (aktualisiert)", date.fromisoformat("2022-01-01"), date.fromisoformat("2022-02-01"), createdNeuigkeit.id).to_json())
 
 
 def test_update_neuigkeit_required_field_to_null_not_ok(lambda_context, dynamodb_table):
@@ -100,7 +101,7 @@ def test_update_neuigkeit_set_null_value(lambda_context, dynamodb_table):
         '/api/neuigkeit/{id}', 'PUT', json.dumps(itemUpdate), pathParameters), lambda_context)
 
     assert response == lambda_response(200, NeuigkeitDTO(
-        "Test", "Eine Testnachricht (aktualisiert)", date.fromisoformat("2022-01-01"), None, createdNeuigkeit.id).to_json())
+        "Test", "Eine Testnachricht (aktualisiert)", None, date.fromisoformat("2022-01-01"), None, createdNeuigkeit.id).to_json())
 
 
 def test_update_neuigkeit_without_body_not_ok(lambda_context, dynamodb_table):

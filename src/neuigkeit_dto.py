@@ -11,6 +11,7 @@ def create(item: dict):
     check_required_field(betreff, 'betreff')
     nachricht = item.get('nachricht')
     check_required_field(nachricht, 'nachricht')
+    introtext = item.get('introtext')
     gueltigVon = item.get('gueltigVon')
     gueltigBis = item.get('gueltigBis')
     gueltigVonDate = None if gueltigVon is None else fromisoformat(gueltigVon)
@@ -19,6 +20,7 @@ def create(item: dict):
     return NeuigkeitDTO(
         betreff,
         nachricht,
+        introtext,
         gueltigVonDate,
         gueltigBisDate,
         item.get('id')
@@ -26,13 +28,14 @@ def create(item: dict):
 
 class NeuigkeitDTO:
 
-    def __init__(self, betreff: str, nachricht: str, gueltigVon: date, gueltigBis: date, id: str = None):
+    def __init__(self, betreff: str, nachricht: str, introtext: str, gueltigVon: date, gueltigBis: date, id: str = None):
         if id:
             self.id = id
         else:
             self.id = str(uuid.uuid4())
         self.betreff = betreff
         self.nachricht = nachricht
+        self.introtext = introtext
         self.gueltigVon = gueltigVon
         self.gueltigBis = gueltigBis
         self.ttl = compute_ttl_for_date(gueltigBis, 7) if getenv_as_boolean(

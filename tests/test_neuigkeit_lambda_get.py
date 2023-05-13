@@ -32,6 +32,26 @@ def test_get_neuigkeit_ok(lambda_context, dynamodb_table):
 
     assert response == lambda_response(200, createdNeuigkeit.to_json())
 
+
+def test_get_neuigkeit_with_introtext_ok(lambda_context, dynamodb_table):
+    item = {
+        'betreff': "Test",
+        "nachricht": "Eine Testnachricht",
+        "introtext": "Eine Einleitung",
+        "gueltigVon": "2022-01-01",
+        "gueltigBis": "2022-02-01"
+    }
+    createdNeuigkeit = neuigkeit_controller.create_neuigkeit(
+        DEFAULT_TENANT_ID, item)
+
+    pathParameters = {
+        "id": createdNeuigkeit.id
+    }
+    response = neuigkeit_handler.handle(event(
+        '/api/neuigkeit/{id}', 'GET', None, pathParameters), lambda_context)
+
+    assert response == lambda_response(200, createdNeuigkeit.to_json())
+
 def test_get_neuigkeit_without_tenant_id_not_ok(lambda_context, dynamodb_table):
     headers = {
         'Content-Type': 'application/json'
