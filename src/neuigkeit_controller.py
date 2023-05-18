@@ -30,14 +30,19 @@ def get_neuigkeit(tenant_id: str, id: str) -> NeuigkeitDTO:
         return None
 
 
-def get_neuigkeiten(tenant_id: str, stichtag: date = None) -> list[NeuigkeitDTO]:
+def get_neuigkeiten(tenant_id: str, stichtag: date = None, count: int = None) -> list[NeuigkeitDTO]:
     neuigkeiten = []
     items = dynamo_db_service.get_neuigkeiten(tenant_id)
     for item in items:
         neuigkeit = create(item)
         if stichtag is None or neuigkeit.gueltigBis is None or neuigkeit.gueltigBis >= stichtag:
             neuigkeiten.append(neuigkeit)
-    return neuigkeiten
+
+    if count:
+        sorted_neuigkeiten = sorted(neuigkeiten, key=lambda neuigkeit: neuigkeit.gueltigVon, reverse=True)
+        return sorted_neuigkeiten[:count]
+    else:
+        return neuigkeiten
 
 
 def delete_neuigkeit(tenant_id: str, id: str) -> bool:

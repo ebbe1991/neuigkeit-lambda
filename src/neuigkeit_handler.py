@@ -2,7 +2,7 @@ from aws_lambda_powertools.event_handler import APIGatewayHttpResolver
 import neuigkeit_controller
 from neuigkeit_controller import NeuigkeitDTO
 from lambda_utils.response_utils import response, empty_response, to_json_array
-from lambda_utils.event_utils import extract_body, extract_tenant, extract_stichtag
+from lambda_utils.event_utils import extract_body, extract_tenant, extract_stichtag, extract_count
 from lambda_utils.exception import ValidationException
 app = APIGatewayHttpResolver()
 
@@ -45,7 +45,8 @@ def getAll():
     event = app.current_event
     tenant_id = extract_tenant(event)
     stichtag = extract_stichtag(event)
-    neuigkeiten = neuigkeit_controller.get_neuigkeiten(tenant_id, stichtag)
+    count = extract_count(event)
+    neuigkeiten = neuigkeit_controller.get_neuigkeiten(tenant_id, stichtag, count)
     body = to_json_array(list(map(NeuigkeitDTO.to_json, neuigkeiten)))
     return response(200, body)
 
