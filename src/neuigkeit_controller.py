@@ -37,12 +37,12 @@ def get_neuigkeiten(tenant_id: str, stichtag: date = None, count: int = None) ->
         neuigkeit = create(item)
         if stichtag is None or neuigkeit.gueltigBis is None or neuigkeit.gueltigBis >= stichtag:
             neuigkeiten.append(neuigkeit)
-
+    
+    sorted_neuigkeiten = sorted(neuigkeiten, key=lambda neuigkeit: neuigkeit.gueltigVon, reverse=True)    
     if count:
-        sorted_neuigkeiten = sorted(neuigkeiten, key=lambda neuigkeit: neuigkeit.gueltigVon, reverse=True)
         return sorted_neuigkeiten[:count]
     else:
-        return neuigkeiten
+        return sorted_neuigkeiten
 
 
 def delete_neuigkeit(tenant_id: str, id: str) -> bool:
